@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <set>
 #include <vector>
+#include <string>
 #include <sstream>
 #include <fstream>
 #include <string.h>
@@ -13,9 +14,8 @@ using namespace std;
 class line
 {
 protected:
- 
-  static char month[20];
-  char unity[5];
+  static vector<string> months;
+   char unity[5];
   char concept[50];
   float measurement;
   float price;
@@ -29,6 +29,7 @@ public:
   char parti[5];
   virtual  void enter_data()=0;
   virtual void print_partida(const line&)=0;
+  virtual void headProjectMonth(size_t)=0;;
   static char menu();
   virtual void  save_file()=0;
   virtual void load_partida()=0;
@@ -36,7 +37,7 @@ public:
   static  void li();
   virtual  void operator()(const line& e)=0;//functor
   virtual void edit()=0;
-   virtual void enterMonth(char m[20])=0;
+  virtual void enterMonth( char m[20])=0;
   
 };
 
@@ -45,12 +46,14 @@ class pepe_line:public line//implementation of the former class
 {
 
 public:
+
   void enter_data();
   void print_partida(const line&);
+  void headProjectMonth(size_t);
   void save_file();
   void load_partida();
   void list();
-  void enterMonth(char m[20]);
+  void enterMonth( char m[20]);
   void operator()(const line& e)
   {
     cout<<e.parti<<"  ";
@@ -83,8 +86,8 @@ struct order
 
 };
 //global variables
-
-char line::month[]="INITIAL BUDGET";
+string str("MAIN BUDGET");
+vector<string> line::months(1,str);
 line* main1;
 pepe_line main2;
 set<pepe_line,order> cont_main2;
@@ -110,7 +113,6 @@ int main()
   tcsetattr(STDIN_FILENO,TCSANOW,&new_t);//set new settings unbuffered
 
   // *****************************************************
-
 
 
   size_t number_partidas;
@@ -244,8 +246,11 @@ int main()
 
 		  for(size_t proj = 0 ; proj < number_projects ; ++proj)
 		    {
+		      static size_t indexProjects=0;
 		      p = (*p_project).begin();
 
+		      main1 -> headProjectMonth(indexProjects);
+		 
 		      for(size_t x = 0 ; x<number_partidas ; ++x)
 			{
 			  main1 -> list();//writes one line/partida
@@ -253,6 +258,7 @@ int main()
 			}
 		      cout << endl << endl;
 		      ++p_project;
+		      ++indexProjects;
 		    }
 
 	  cout << "\n\033[0;0mWould you like to create a monthly prevision from this list?" << "\033[?25h";
@@ -283,20 +289,21 @@ int main()
 	   
 	      cout << "\033[?25h";
 
+	      
 	      char monthLastPrevision[] = "MArch";
-
 	      buffered();
-
 	      cout << "\nWhat month? ";
-
 	      cin >> monthLastPrevision;
+	      
 
-	      //we enter this month to every line , every partida.It's static!!
+	      //we enter this month in the vector months
 	      main1 -> enterMonth (monthLastPrevision);
+	      
 
 	      unbuffered();//cin unbuffered  (keyboard)
-
+	     
 	      cout << "\033[?25l";//hide cursor
+	      
 	    }
 	    
 	  break;
@@ -564,8 +571,17 @@ void pepe_line::edit()
 
 }
 
-void pepe_line::enterMonth(char m[20])
+void pepe_line::enterMonth( char m[20])
 {
-  //it has to be like that because 'month' is protected
-  strcpy(month,m);
+  string month(m);
+  line::months.push_back(month);
+  
+}
+
+void pepe_line::headProjectMonth(size_t position)
+{
+  //let's read from memory... we need the position;
+  cout << endl;
+  cout << months[position] << endl;
+
 }
