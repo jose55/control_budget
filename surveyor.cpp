@@ -244,9 +244,13 @@ int main()
 		  cout << endl << "List:" << endl;
 		  number_projects = project.size();
 
+		  static size_t indexProjects;
+
+		  indexProjects=0;
+
 		  for(size_t proj = 0 ; proj < number_projects ; ++proj)
 		    {
-		      static size_t indexProjects=0;
+	
 		      p = (*p_project).begin();
 
 		      main1 -> headProjectMonth(indexProjects);
