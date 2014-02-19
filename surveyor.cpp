@@ -38,6 +38,7 @@ public:
   virtual  void operator()(const line& e)=0;//functor
   virtual void edit()=0;
   virtual void enterMonth( char m[20])=0;
+  virtual void saveMonths()=0;
   
 };
 
@@ -54,6 +55,7 @@ public:
   void load_partida();
   void list();
   void enterMonth( char m[20]);
+  void saveMonths();
   void operator()(const line& e)
   {
     cout<<e.parti<<"  ";
@@ -116,7 +118,7 @@ int main()
 
 
   size_t number_partidas;
-  size_t number_projects;
+  size_t number_projects=0;
 
   while(1)
     {
@@ -137,11 +139,27 @@ int main()
 	    }
 	  catch(const char* e)
 	    {
+	      cout<<"errooooor !!!!!!"<<endl;
 	      cout << endl << e << endl;
 	      ok = false;
 	    } 
 
-	  if(ok) cont_main2.insert(main2);
+	  if(ok)
+	    {
+	      cont_main2.insert(main2);
+	      // int a=3;
+	      if(!project.size()) project.push_back(cont_main2);
+
+	      else
+		{
+		  project.pop_back();
+
+		  project.push_back(cont_main2);
+
+		}
+	    }
+
+
 	  else cout << "I have inserted no partida";
 	  tcsetattr(STDIN_FILENO,TCSANOW,&new_t);//set new settings unbuffered
  	  break;
@@ -161,6 +179,7 @@ int main()
 
 	  tcsetattr(STDIN_FILENO,TCSANOW,&new_t);//set new settings unbuffered
 
+	 
 
 	  //converses string to float
 	  main2.find_partida(main2.parti);//find out the actual number
@@ -168,7 +187,7 @@ int main()
 	  cout << fixed << setprecision(2);//only 2 decimals
 	  //	  main2.find_partida(main2.partida);
 
-	  p=cont_main2.find(main2);
+	  p=cont_main2.find(main2);//it is in cont_main2
 	  if(p != cont_main2.cend())
 	    {
 	      main2 = *p;	 
@@ -199,17 +218,31 @@ int main()
 	  if(file.is_open())
 	    {
 	      number_partidas = cont_main2.size();
+
+	      //    static size_t  number_projects=0;
+
+	      //     number_projects=project.size();
+
 	      //the first byte in disk will be the number of objects/partidas.. next the objects
 	      file.write(reinterpret_cast<const char*>(&(number_partidas)),sizeof(number_partidas));
 
+
+	      //the second byte will contain the number of projectd
+	      // file.write(reinterpret_cast<const char*>(&(number_projects)),sizeof(number_projects));
+
 	      p=cont_main2.cbegin();//point to the begining of the vector (dinamic array)
-	      
-	      for(size_t x = 0 ; x < number_partidas ; ++x)
-		{
-		  main2 = *p;
-		  main1 -> save_file();//p contains an object a partida...saves ONE object/partida
-		  ++p;//next object ... next partida
-		}
+	      main2=*p;
+	      main1=&main2;
+	      //   main1 -> saveMonths();
+
+	     
+		  for(size_t x = 0 ; x < number_partidas ; ++x)
+		    {
+		      main2 = *p;
+		      main1 -> save_file();//p contains an object a partida...saves ONE object/partida
+		      ++p;//next object ... next partida
+		    }
+		
 	    }
 	  file.close();
 	  cout << "\n*** FILE SAVED ***\n";
@@ -221,17 +254,26 @@ int main()
 	    {
 	      
 	       cont_main2.erase(cont_main2.begin(),cont_main2.end());
-	       int n;//we read the number of objects/partidas
-	       file.read((char*)&n,sizeof(n) );
-
-	      for(int x = 0;x < n; ++x)
-		main1 -> load_partida();
-	
-	    }
+	       int numberPartidas;//we read the number of objects/partidas
+	       file.read((char*)&numberPartidas,sizeof(numberPartidas) );
+	       
+		   
+		     
+		       for(int x = 0;x < numberPartidas; ++x)
+			 main1 -> load_partida();
+		     
+		   project.push_back(cont_main2);
+		   
+		 } 
+	    
 
 	    file.close();
 
-	    project.push_back(cont_main2);
+
+
+
+
+
 	    cout << "\n*** FILE LOADED ***\n";
 	  break;
 
@@ -244,16 +286,20 @@ int main()
 		  cout << endl << "List:" << endl;
 		  number_projects = project.size();
 
-		  static size_t indexProjects;
+		  	  static size_t indexProjects;
 
 		  indexProjects=0;
 
 		  for(size_t proj = 0 ; proj < number_projects ; ++proj)
 		    {
 	
-		      p = (*p_project).begin();
+		      p = (*p_project).begin();//???????????????
 
-		      main1 -> headProjectMonth(indexProjects);
+		      cont_main2=*(project.begin());
+
+		      p=cont_main2.begin();//ok !!!!!!
+
+		      //	      main1 -> headProjectMonth(indexProjects);
 		 
 		      for(size_t x = 0 ; x<number_partidas ; ++x)
 			{
@@ -277,6 +323,12 @@ int main()
 
 	      project.push_back(cont_main2);
 	      //now we should save this container of containers on HDD
+
+	      //so.....
+	      ++number_projects;
+
+
+
 	      p_project=--project.end();//points past end so --
 	      //no it point to the last set (the last budget)
 
@@ -357,7 +409,7 @@ void pepe_line::enter_data()
     {
       cout << "\nMeasurement: ";
       cin.clear();
-      cin.ignore();
+      // cin.ignore();
       cin >> aux_measurement;
       cout << "\033[1A";
     
@@ -588,4 +640,14 @@ void pepe_line::headProjectMonth(size_t position)
   cout << endl;
   cout << months[position] << endl;
 
+}
+
+
+void pepe_line::saveMonths()
+{
+  // let's save the vector<string> months.... one by one
+  
+  for(string stringMonth : months)
+    file.write(reinterpret_cast<const char*>(&stringMonth),sizeof(stringMonth));
+  
 }
