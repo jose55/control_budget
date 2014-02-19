@@ -10,15 +10,18 @@ class partidas
   string strNumberPartida;
   string unity;
   string description;
-  int measurement;
-  int price;
-  int ammount;
+  float measurement;
+  float price;
+  float ammount;
 
 public:
  int intNumberPartida;
-  partidas(string snp,string u,string d,int m,int p,int a):strNumberPartida(snp),unity(u),description(d),measurement(m),price(p),ammount(a){};
-  partidas(){};
+  
+  partidas(string);
+  partidas();
+
   void strToIntPartida();
+  void printPartida();
  
   //this decides how to order the objects int the set.
   
@@ -37,7 +40,9 @@ void menu();
 
 
 set<partidas,order> SetOfPartidas;
+set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
+vector<set<partidas,order>>::iterator iContainerOfMonths;
 
 
 int main()
@@ -54,37 +59,59 @@ int main()
 	case 1:
 	  {
 	  //creates a new object(partida) and adds to the containers
-	  cout<<"Number Partida: ";
-	  string np;
-	  cin>>np;
-	  cout<<"\nUnity: ";
-	  string u;
-	  cin>>u;
-  	  cout<<"\nDescription:";
-	  string d;
-	  cin.ignore();
-	  getline(cin,d);
-	  cout<<"\nMeasurement: ";
-	  int m;
-	  cin>>m;
-	  cout<<"Price: ";
-	  float p;
-	  cin>>p;
-	  float ammount=m*p;
-
-	  partidas currentPartida(np,u,d,m,p,ammount);
+	 
+	  partidas currentPartida;
 
 	  //stores the int of the partida
 	  currentPartida.strToIntPartida();
 
 	  //stores the partida in the 2 containers  (they are global)
 	  SetOfPartidas.insert(currentPartida);
+
+	  //we've modify the set of partidas that there was so we delete wich
+	  //was so far..
+	  if(ContainerOfMonths.size())
+	    ContainerOfMonths.pop_back();
+
+	  //... and push the new one
 	  ContainerOfMonths.push_back(SetOfPartidas);
 
 	  //currentPartida desapear because is local to this block
 	  }
 	  break;
 	case 2:
+
+	  break;
+
+	case 3:
+	  {
+	    cout<<"Which partida do you want to print? ";
+	    string partida;
+	    cin>>partida;
+
+	    partidas partidaToCompare(partida);
+
+	    //finds out the value of the int
+	    //needed to order ... or to find
+	    partidaToCompare.strToIntPartida();
+
+	    iSetOfPartidas=SetOfPartidas.find(partidaToCompare);
+	 
+	    if(iSetOfPartidas!=SetOfPartidas.end())
+	      {
+		partidaToCompare=*iSetOfPartidas;
+		partidaToCompare.printPartida();
+
+	      }
+	    else
+	      {
+		cout << "There's not such a partida"<<endl;
+
+	      }
+
+
+
+	  }
 
 	  break;
 
@@ -100,8 +127,16 @@ int main()
 
 void menu()
 {
-  cout << "menu" << endl;
+  cout << "1 Add new partida" << endl;
+  cout << "2 Delete Partida" << endl;
+  cout << "3 Print on screen partida" << endl;
+  cout << "4 Save current budget of the current month" << endl;
+  cout << "5 Load a budget" << endl;
+  cout << "6 List partidas of the current budget" << endl;
+  cout << "7 Comparing list of two budgets" << endl;
+  cout << "8 Change current month" << endl;
 
+  cout << "\nChoose: " << endl;
 
 
 }
@@ -146,5 +181,42 @@ void partidas::strToIntPartida()
   int num=n;//gets the integer side
   intNumberPartida += num;
 
+
+}
+
+
+partidas::partidas()
+{
+  cout<<"Number Partida: ";
+  cin>>strNumberPartida;
+  cout<<"\nUnity: ";
+  cin>>unity;
+  cout<<"\nDescription:";
+  cin.ignore();
+  getline(cin,description);
+  cout<<"\nMeasurement: ";
+  cin>>measurement;
+  cout<<"Price: ";
+  cin>>price;
+  ammount=measurement*price;
+  cout<<"\nAmmount: "<<ammount<<endl;
+
+}
+
+
+
+partidas::partidas(string partida)
+{
+  strNumberPartida=partida;
+}
+
+
+void partidas::printPartida()
+{
+  cout<<endl;
+  cout<<strNumberPartida<<endl;
+  cout<<unity<<endl;
+  cout<<description<<endl;
+  cout<<measurement<<" "<<price<<" "<<ammount<<endl;
 
 }
