@@ -4,7 +4,7 @@
 #include <sstream>
 using namespace std;
 
-
+ enum print{detailed,single};
 class partidas
 {
   string strNumberPartida;
@@ -13,7 +13,7 @@ class partidas
   float measurement;
   float price;
   float ammount;
-
+ 
 public:
  int intNumberPartida;
   
@@ -21,7 +21,10 @@ public:
   partidas();
 
   void strToIntPartida();
-  void printPartida();
+
+  //2 types detailed when you see only one partida completely.
+  //single you don't see the full descrition; (you want to list)
+  void printPartida(print type=detailed)const;
  
   //this decides how to order the objects int the set.
   
@@ -98,22 +101,32 @@ int main()
 	    iSetOfPartidas=SetOfPartidas.find(partidaToCompare);
 	 
 	    if(iSetOfPartidas!=SetOfPartidas.end())
-	      {
-		partidaToCompare=*iSetOfPartidas;
-		partidaToCompare.printPartida();
-
-	      }
+	      iSetOfPartidas->printPartida();// for it is CONST !!!!
+		//		partidaToCompare=*iSetOfPartidas;
+		//		partidaToCompare.printPartida();
+		//****** VERY IMPORTANT *******
+	      
+	      
 	    else
-	      {
-		cout << "There's not such a partida"<<endl;
-
-	      }
-
-
+	      cout << "There's not such a partida"<<endl;
 
 	  }
 
 	  break;
+
+	case 6:
+	  iSetOfPartidas=SetOfPartidas.cbegin();
+	  {
+	  size_t numberOfPartidas=SetOfPartidas.size();
+
+	  while(iSetOfPartidas!=SetOfPartidas.cend())
+	    iSetOfPartidas++ -> printPartida(single);
+
+	  }
+
+	  break;
+
+
 
 
 	}
@@ -211,12 +224,32 @@ partidas::partidas(string partida)
 }
 
 
-void partidas::printPartida()
+void partidas::printPartida(print type) const
 {
   cout<<endl;
-  cout<<strNumberPartida<<endl;
-  cout<<unity<<endl;
-  cout<<description<<endl;
+  cout<<strNumberPartida;
+  if(type==single)
+    {
+      cout<<"  ";
+    }
+  else cout<<endl;
+
+
+  cout<<unity;
+  if(type==single)
+    {
+      cout<<"  ";
+    }
+  else cout<<endl;
+
+  string shortDescription(description,5);
+  cout<<shortDescription;
+  if(type==single)
+    {
+      cout<<"  ";
+    }
+  else cout<<endl;
+
   cout<<measurement<<" "<<price<<" "<<ammount<<endl;
 
 }
