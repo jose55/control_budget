@@ -5,9 +5,11 @@
 #include <fstream>
 using namespace std;
 
- enum print{detailed,single};
+enum print{detailed,single};
 ofstream file;
 ifstream ifile;
+
+const int empty=0;
 
 class partidas
 {
@@ -49,11 +51,16 @@ inline  void save(float reader)const{  file.write(reinterpret_cast<const char*>(
 
 
 public:
- int intNumberPartida;
-  
+  int intNumberPartida;
+
+
+  void load(string);
+
+ 
+
   partidas(string);
   partidas();
-
+  partidas(int empty){};
   void strToIntPartida();
 
   //2 types detailed when you see only one partida completely.
@@ -188,7 +195,7 @@ int main()
 
 	    //we are going to load the data of one single partida
 	    //in the next object
-	    partidas loadingPartida;
+	    partidas loadingPartida(empty);
 
 	    if(ifile.is_open())
 	      {
@@ -396,10 +403,58 @@ void partidas::savePartida()const
 
 }
 
+
+void partidas::load(string field)
+{
+  
+  const char* c_reader;
+  int numberOfCharacters;
+  ifile.read((char*)&numberOfCharacters,4);
+  c_reader=new char[numberOfCharacters]; 
+  ifile.read((char*)c_reader,numberOfCharacters);
+  string aux(c_reader);
+  delete c_reader;
+  copy(aux.cbegin(),aux.cend(),field.begin());//only for a string
+}
+
+
 void partidas::loadPartida()
 {
 
+  load(strNumberPartida);
+  load(unity);
+  load(description);
 
+  ifile.read((char*)&measurement,4);
+  ifile.read((char*)&price,4);
+  ifile.read((char*)&ammount,4);
+  ifile.read((char*)&intNumberPartida,4);
 
+      //int a=10;
+  //load(3);
+  /*
+  const char* c_reader;
+  int numberOfCharacters;
+  
+  //reads sizeof(strNumberPartida).
+  ifile.read((char*)&numberOfCharacters,4);
 
+  //reads strNumberPartida
+  c_reader=new char[numberOfCharacters]; 
+ ifile.read((char*)c_reader,numberOfCharacters);
+
+  string aux(c_reader);
+  delete c_reader;
+  copy(aux.cbegin(),aux.cend(),strNumberPartida.begin());
+  
+
+  //reads unity
+  ifile.read((char*)&numberOfCharacters,4);
+  c_reader=new char[numberOfCharacters]; 
+  ifile.read((char*)c_reader,numberOfCharacters);
+
+  string aux1(c_reader);
+  delete c_reader;
+  copy(aux1.cbegin(),aux1.cend(),unity.begin());
+  */
 }
