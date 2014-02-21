@@ -7,6 +7,7 @@ using namespace std;
 
  enum print{detailed,single};
 ofstream file;
+ifstream ifile;
 
 class partidas
 {
@@ -60,6 +61,7 @@ public:
   void printPartida(print type=detailed)const;
  
   void savePartida()const;  
+  void loadPartida();
 
 };
 
@@ -151,16 +153,13 @@ int main()
 	  {
 	    size_t numberPartidas=SetOfPartidas.size();
 	    string nameFile;
-	    
 	    cin >> nameFile;
-	    
 	    file.open(nameFile,ios_base::out | ios_base::binary);
 
 	    if(file.is_open())
 	      {
 		//first.. the number of partidas
 		file.write(reinterpret_cast<const char*>(&numberPartidas),sizeof(numberPartidas));
-
 
 		  iSetOfPartidas=SetOfPartidas.cbegin();
 
@@ -169,20 +168,55 @@ int main()
 		      iSetOfPartidas -> savePartida(); 
 		      ++iSetOfPartidas;
 		    }
-		  
-	      }
+		      }
 	    file.close();
 
-
 	  }
-
-
-
 	  break;
 
+	case 5:
+	  //load month to SetOfPartidas 
+	  //and the push_back to the general container (vector)
+	  {
+	    string fileName;
+	    cin>>fileName;
+	    
+	    ifile.open(fileName, ios_base::in | ios_base::binary);
 
+	    //empties the whole set
+	    SetOfPartidas.erase(SetOfPartidas.begin(),SetOfPartidas.end());
 
+	    //we are going to load the data of one single partida
+	    //in the next object
+	    partidas loadingPartida;
 
+	    if(ifile.is_open())
+	      {
+
+		//first..  load how many partidas:
+		int numberOfPartidas;
+		ifile.read((char*)&numberOfPartidas,4);
+
+		//loop with partidas
+		while(numberOfPartidas--)
+		  {
+		    //load a single partida...
+		    loadingPartida.loadPartida();
+
+		    //insert this loadingPartida in the SetOfPartidas
+
+		  }
+
+		//push_back on the vector.. general container
+
+	      }
+
+	    ifile.close();
+
+	    
+
+	  }
+	  break;
 
 	case 6:
 	  //list
@@ -358,6 +392,14 @@ void partidas::savePartida()const
 	
   int iReader=iSetOfPartidas -> intNumberPartida;
   save(iReader);
+
+
+}
+
+void partidas::loadPartida()
+{
+
+
 
 
 }
