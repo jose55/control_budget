@@ -54,13 +54,19 @@ public:
   int intNumberPartida;
 
 
-  void load(string);
+  void load(string&);
 
  
 
   partidas(string);
   partidas();
-  partidas(int empty){};
+  partidas(int empty)
+  {
+    strNumberPartida=(10);//probabli reserves 10 characters
+    unity=10;
+    description=100;
+
+  };
   void strToIntPartida();
 
   //2 types detailed when you see only one partida completely.
@@ -199,7 +205,6 @@ int main()
 
 	    if(ifile.is_open())
 	      {
-
 		//first..  load how many partidas:
 		int numberOfPartidas;
 		ifile.read((char*)&numberOfPartidas,4);
@@ -210,18 +215,15 @@ int main()
 		    //load a single partida...
 		    loadingPartida.loadPartida();
 
+		    SetOfPartidas.insert(loadingPartida);
 		    //insert this loadingPartida in the SetOfPartidas
-
 		  }
 
 		//push_back on the vector.. general container
-
+		ContainerOfMonths.push_back(SetOfPartidas);
 	      }
 
 	    ifile.close();
-
-	    
-
 	  }
 	  break;
 
@@ -404,10 +406,10 @@ void partidas::savePartida()const
 }
 
 
-void partidas::load(string field)
+void partidas::load(string& field)
 {
+  const char* c_reader=NULL;
   
-  const char* c_reader;
   int numberOfCharacters;
   ifile.read((char*)&numberOfCharacters,4);
   c_reader=new char[numberOfCharacters]; 
@@ -415,46 +417,20 @@ void partidas::load(string field)
   string aux(c_reader);
   delete c_reader;
   copy(aux.cbegin(),aux.cend(),field.begin());//only for a string
+
 }
 
 
 void partidas::loadPartida()
 {
 
-  load(strNumberPartida);
+  load(strNumberPartida);//passes the value by reference
   load(unity);
   load(description);
-
+  
   ifile.read((char*)&measurement,4);
   ifile.read((char*)&price,4);
   ifile.read((char*)&ammount,4);
   ifile.read((char*)&intNumberPartida,4);
-
-      //int a=10;
-  //load(3);
-  /*
-  const char* c_reader;
-  int numberOfCharacters;
   
-  //reads sizeof(strNumberPartida).
-  ifile.read((char*)&numberOfCharacters,4);
-
-  //reads strNumberPartida
-  c_reader=new char[numberOfCharacters]; 
- ifile.read((char*)c_reader,numberOfCharacters);
-
-  string aux(c_reader);
-  delete c_reader;
-  copy(aux.cbegin(),aux.cend(),strNumberPartida.begin());
-  
-
-  //reads unity
-  ifile.read((char*)&numberOfCharacters,4);
-  c_reader=new char[numberOfCharacters]; 
-  ifile.read((char*)c_reader,numberOfCharacters);
-
-  string aux1(c_reader);
-  delete c_reader;
-  copy(aux1.cbegin(),aux1.cend(),unity.begin());
-  */
 }
