@@ -2,9 +2,12 @@
 #include <set>
 #include <vector>
 #include <sstream>
+#include <fstream>
 using namespace std;
 
  enum print{detailed,single};
+ofstream file;
+
 class partidas
 {
   string strNumberPartida;
@@ -13,7 +16,37 @@ class partidas
   float measurement;
   float price;
   float ammount;
- 
+  int size(const char* chain)const
+  {
+    int count=0;
+
+    char a='k';//to initialize
+
+    while(a)
+      {
+	a=*(chain+count++);
+	int l=0;
+      };
+     return count;
+
+  }
+  
+  
+  inline  void save(const char* reader)const
+  {
+    int s=size(reader);
+    file.write(reinterpret_cast<const char*>(&s),4);
+    file.write(reinterpret_cast<const char*>(reader),size(reader));
+  }
+
+
+
+inline  void save(float reader)const{  file.write(reinterpret_cast<const char*>(&reader),sizeof(reader));}
+
+  inline  void save(int reader)const{  file.write(reinterpret_cast<const char*>(&reader),sizeof(reader));}
+
+
+
 public:
  int intNumberPartida;
   
@@ -26,8 +59,7 @@ public:
   //single you don't see the full descrition; (you want to list)
   void printPartida(print type=detailed)const;
  
-  //this decides how to order the objects int the set.
-  
+  void savePartida()const;  
 
 };
 
@@ -88,6 +120,7 @@ int main()
 
 	case 3:
 	  {
+	    //print single partida completely
 	    cout<<"Which partida do you want to print? ";
 	    string partida;
 	    cin>>partida;
@@ -113,16 +146,50 @@ int main()
 	  }
 
 	  break;
+	case 4:
+	  //save month
+	  {
+	    size_t numberPartidas=SetOfPartidas.size();
+	    string nameFile;
+	    
+	    cin >> nameFile;
+	    
+	    file.open(nameFile,ios_base::out | ios_base::binary);
+
+	    if(file.is_open())
+	      {
+		//first.. the number of partidas
+		file.write(reinterpret_cast<const char*>(&numberPartidas),sizeof(numberPartidas));
+
+
+		  iSetOfPartidas=SetOfPartidas.cbegin();
+
+		  while(iSetOfPartidas!=SetOfPartidas.cend())
+		    {
+		      iSetOfPartidas -> savePartida(); 
+		      ++iSetOfPartidas;
+		    }
+		  
+	      }
+	    file.close();
+
+
+	  }
+
+
+
+	  break;
+
+
+
+
 
 	case 6:
+	  //list
 	  iSetOfPartidas=SetOfPartidas.cbegin();
-	  {
-	  size_t numberOfPartidas=SetOfPartidas.size();
 
 	  while(iSetOfPartidas!=SetOfPartidas.cend())
 	    iSetOfPartidas++ -> printPartida(single);
-
-	  }
 
 	  break;
 
@@ -242,7 +309,7 @@ void partidas::printPartida(print type) const
     }
   else cout<<endl;
 
-  string shortDescription(description,5);
+  string shortDescription(description,2);
   cout<<shortDescription;
   if(type==single)
     {
@@ -251,5 +318,46 @@ void partidas::printPartida(print type) const
   else cout<<endl;
 
   cout<<measurement<<" "<<price<<" "<<ammount<<endl;
+
+}
+
+
+void partidas::savePartida()const
+{
+
+  //we don't have to save strings
+  //we have to save c_style char !!!!!! c_str().. !!!!!!!!!!!!!!!!!!!!!
+
+  string reader;
+  const char* c_reader;
+
+  reader=iSetOfPartidas -> strNumberPartida;
+  c_reader=reader.c_str();
+  save(c_reader);
+
+  reader=iSetOfPartidas -> unity;
+  c_reader=reader.c_str();
+  save(c_reader);
+
+
+  reader=iSetOfPartidas -> description;
+  c_reader=reader.c_str();
+  save(c_reader);
+		
+
+  float fReader;
+
+  fReader=iSetOfPartidas -> measurement;
+  save(fReader);
+
+  fReader=iSetOfPartidas -> price;
+  save(fReader);
+
+  fReader=iSetOfPartidas -> ammount;
+  save(fReader);	
+	
+  int iReader=iSetOfPartidas -> intNumberPartida;
+  save(iReader);
+
 
 }
