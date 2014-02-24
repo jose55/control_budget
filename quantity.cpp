@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <string.h>
 using namespace std;
 
 enum print{detailed,single};
@@ -24,9 +25,9 @@ class partidas
 
 
   //we'll save in in a file apart from month..  file named budget
-  static char c_strNumberPartida[5];
-  static char c_unity[5];
-  static char c_description[200];
+  static char c_strNumberPartida[];
+  static char c_unity[];
+  static char c_description[];
 
   float measurement;
   float price;
@@ -95,6 +96,10 @@ struct order
 
 void menu();
 
+
+char partidas::c_strNumberPartida[5];
+char partidas::c_unity[5];
+char partidas::c_description[200];
 
 set<partidas,order> SetOfPartidas;
 set<partidas,order>::iterator iSetOfPartidas;
@@ -317,11 +322,17 @@ partidas::partidas(char)
 {
   cout<<"Number Partida: ";
   cin>>strNumberPartida;
+  strcpy(c_strNumberPartida,strNumberPartida.c_str());
+
   cout<<"\nUnity: ";
-  cin>>unity;
+  cin>>unity>>c_unity;
+  strcpy(c_unity,unity.c_str());
+
   cout<<"\nDescription:";
   cin.ignore();
   getline(cin,description);
+  strcpy(c_description,description.c_str());
+
   cout<<"\nMeasurement: ";
   cin>>measurement;
   cout<<"Price: ";
