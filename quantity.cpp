@@ -1,6 +1,7 @@
 #include <iostream>
 #include <set>
 #include <vector>
+#include <string>
 #include <sstream>
 #include <fstream>
 using namespace std;
@@ -11,30 +12,37 @@ ifstream ifile;
 
 const int empty=0;
 
+
+
+
 class partidas
 {
+  
   string strNumberPartida;
   string unity;
   string description;
+
+
+  //we'll save in in a file apart from month..  file named budget
+  static char c_strNumberPartida[5];
+  static char c_unity[5];
+  static char c_description[200];
+
   float measurement;
   float price;
   float ammount;
   int size(const char* chain)const
   {
     int count=0;
-
     char a='k';//to initialize
-
     while(a)
       {
 	a=*(chain+count++);
 	int l=0;
       };
      return count;
-
   }
-  
-  
+    
   inline  void save(const char* reader)const
   {
     int s=size(reader);
@@ -42,31 +50,30 @@ class partidas
     file.write(reinterpret_cast<const char*>(reader),size(reader));
   }
 
-
-
 inline  void save(float reader)const{  file.write(reinterpret_cast<const char*>(&reader),sizeof(reader));}
 
   inline  void save(int reader)const{  file.write(reinterpret_cast<const char*>(&reader),sizeof(reader));}
 
-
-
 public:
   int intNumberPartida;
-
-
   void load(string&);
-
- 
-
   partidas(string);
-  partidas();
-  partidas(int empty)
+  partidas(char);
+  partidas()
   {
-    strNumberPartida=(10);//probabli reserves 10 characters
+    strNumberPartida=10;//probably reserves 10 characters
     unity=10;
     description=100;
 
-  };
+  }
+  partidas(int empty)
+  {
+    strNumberPartida=10;//probably reserves 10 characters
+    unity=10;
+    description=100;
+
+  }
+  
   void strToIntPartida();
 
   //2 types detailed when you see only one partida completely.
@@ -108,25 +115,25 @@ int main()
 	{
 	case 1:
 	  {
-	  //creates a new object(partida) and adds to the containers
-	 
-	  partidas currentPartida;
-
-	  //stores the int of the partida
-	  currentPartida.strToIntPartida();
-
-	  //stores the partida in the 2 containers  (they are global)
-	  SetOfPartidas.insert(currentPartida);
-
-	  //we've modify the set of partidas that there was so we delete wich
-	  //was so far..
-	  if(ContainerOfMonths.size())
-	    ContainerOfMonths.pop_back();
-
-	  //... and push the new one
-	  ContainerOfMonths.push_back(SetOfPartidas);
-
-	  //currentPartida desapear because is local to this block
+	    //creates a new object(partida) and adds to the containers
+	    //we pass as parameter any character
+	    partidas currentPartida('c');
+	    
+	    //stores the int of the partida
+	    currentPartida.strToIntPartida();
+	    
+	    //stores the partida in the 2 containers  (they are global)
+	    SetOfPartidas.insert(currentPartida);
+	    
+	    //we've modify the set of partidas that there was so we delete wich
+	    //was so far..
+	    if(ContainerOfMonths.size())
+	      ContainerOfMonths.pop_back();
+	    
+	    //... and push the new one
+	    ContainerOfMonths.push_back(SetOfPartidas);
+	    
+	    //currentPartida desapear because is local to this block
 	  }
 	  break;
 	case 2:
@@ -215,9 +222,13 @@ int main()
 		    //load a single partida...
 		    loadingPartida.loadPartida();
 
-		    SetOfPartidas.insert(loadingPartida);
 		    //insert this loadingPartida in the SetOfPartidas
+		    SetOfPartidas.insert(loadingPartida);
 		  }
+
+		auto i=SetOfPartidas.begin();
+
+
 
 		//push_back on the vector.. general container
 		ContainerOfMonths.push_back(SetOfPartidas);
@@ -236,13 +247,7 @@ int main()
 
 	  break;
 
-
-
-
 	}
-
-
-
     }
 
   return 0;
@@ -308,7 +313,7 @@ void partidas::strToIntPartida()
 }
 
 
-partidas::partidas()
+partidas::partidas(char)
 {
   cout<<"Number Partida: ";
   cin>>strNumberPartida;
@@ -352,7 +357,7 @@ void partidas::printPartida(print type) const
     }
   else cout<<endl;
 
-  string shortDescription(description,2);
+  string shortDescription(description,1);
   cout<<shortDescription;
   if(type==single)
     {
