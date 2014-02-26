@@ -325,7 +325,7 @@ partidas::partidas(char)
   strcpy(c_strNumberPartida,strNumberPartida.c_str());
 
   cout<<"\nUnity: ";
-  cin>>unity>>c_unity;
+  cin>>unity;
   strcpy(c_unity,unity.c_str());
 
   cout<<"\nDescription:";
@@ -340,6 +340,17 @@ partidas::partidas(char)
   ammount=measurement*price;
   cout<<"\nAmmount: "<<ammount<<endl;
 
+  //now, we want to save the 3 strings (but c_style) in file: budget 
+
+  file.open("budget",ios_base::out | ios_base::binary | ios_base::app);
+  if(file.is_open())
+    {
+      save(strNumberPartida.c_str());
+      save(unity.c_str());
+      save(description.c_str());
+    }
+
+  file.close();
 }
 
 
