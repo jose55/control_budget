@@ -25,9 +25,9 @@ class partidas
 
 
   //we'll save in in a file apart from month..  file named budget
-  static char c_strNumberPartida[];
-  static char c_unity[];
-  static char c_description[];
+  char c_strNumberPartida[5];
+  char c_unity[5];
+  char c_description[200];
 
   float measurement;
   float price;
@@ -86,6 +86,17 @@ public:
 
 };
 
+class budget
+{
+  char c_strNumberPartida[5];
+  char c_unity[5];
+  char x_description[200];
+  int intNumberPartida;
+public:
+
+
+
+};
 struct order
 {
   bool operator() (const partidas& el,const partidas& er)
@@ -97,9 +108,9 @@ struct order
 void menu();
 
 
-char partidas::c_strNumberPartida[5];
-char partidas::c_unity[5];
-char partidas::c_description[200];
+//char partidas::c_strNumberPartida[5];
+//char partidas::c_unity[5];
+//char partidas::c_description[200];
 
 set<partidas,order> SetOfPartidas;
 set<partidas,order>::iterator iSetOfPartidas;
