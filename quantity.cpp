@@ -56,6 +56,9 @@ inline  void save(float reader)const{  file.write(reinterpret_cast<const char*>(
   inline  void save(int reader)const{  file.write(reinterpret_cast<const char*>(&reader),sizeof(reader));}
 
 public:
+
+ void strToIntPartida();
+
   int intNumberPartida;
   void load(string&);
   partidas(string);
@@ -75,7 +78,7 @@ public:
 
   }
   
-  void strToIntPartida();
+ 
 
   //2 types detailed when you see only one partida completely.
   //single you don't see the full descrition; (you want to list)
@@ -114,6 +117,7 @@ set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
 vector<set<partidas,order>>::iterator iContainerOfMonths;
 set<budget,order> SetOfDescriptions;
+	  budget partidaOnlyDescription;    
 
 int main()
 {
@@ -131,9 +135,11 @@ int main()
 	    //creates a new object(partida) and adds to the containers
 	    //we pass as parameter any character
 	    partidas currentPartida('c');
-	    
+	    SetOfDescriptions.insert(partidaOnlyDescription);
+
 	    //stores the int of the partida
 	    currentPartida.strToIntPartida();
+	    partidaOnlyDescription.intNumberPartida=currentPartida.intNumberPartida;
 	    
 	    //stores the partida in the 2 containers  (they are global)
 	    SetOfPartidas.insert(currentPartida);
@@ -328,7 +334,7 @@ void partidas::strToIntPartida()
 
 partidas::partidas(char)
 {
-  budget partidaOnlyDescription;
+
 
   cout<<"Number Partida: ";
   cin>>strNumberPartida;
