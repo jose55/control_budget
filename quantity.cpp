@@ -25,9 +25,9 @@ class partidas
 
 
   //we'll save in in a file apart from month..  file named budget
-  char c_strNumberPartida[5];
-  char c_unity[5];
-  char c_description[200];
+  // char c_strNumberPartida[5];
+  //char c_unity[5];
+  //char c_description[200];
 
   float measurement;
   float price;
@@ -86,17 +86,14 @@ public:
 
 };
 
-class budget
+struct budget
 {
   char c_strNumberPartida[5];
   char c_unity[5];
-  char x_description[200];
+  char c_description[200];
   int intNumberPartida;
-public:
-
-
-
 };
+
 struct order
 {
   bool operator() (const partidas& el,const partidas& er)
@@ -116,7 +113,7 @@ set<partidas,order> SetOfPartidas;
 set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
 vector<set<partidas,order>>::iterator iContainerOfMonths;
-
+set<budget,order> SetOfDescriptions;
 
 int main()
 {
@@ -331,18 +328,25 @@ void partidas::strToIntPartida()
 
 partidas::partidas(char)
 {
+  budget partidaOnlyDescription;
+
   cout<<"Number Partida: ";
   cin>>strNumberPartida;
-  strcpy(c_strNumberPartida,strNumberPartida.c_str());
+  //  strcpy(c_strNumberPartida,strNumberPartida.c_str());
+  strcpy(partidaOnlyDescription.c_strNumberPartida,strNumberPartida.c_str());
+
 
   cout<<"\nUnity: ";
   cin>>unity;
-  strcpy(c_unity,unity.c_str());
+  //strcpy(c_unity,unity.c_str());
+  strcpy(partidaOnlyDescription.c_unity,unity.c_str());
+
 
   cout<<"\nDescription:";
   cin.ignore();
   getline(cin,description);
-  strcpy(c_description,description.c_str());
+  //  strcpy(c_description,description.c_str());
+  strcpy(partidaOnlyDescription.c_description,description.c_str());
 
   cout<<"\nMeasurement: ";
   cin>>measurement;
