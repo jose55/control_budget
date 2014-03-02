@@ -97,6 +97,17 @@ struct budget
   int intNumberPartida;
 };
 
+struct orderBudget
+{
+
+  bool operator()(const budget& left,const budget& right)
+  {
+
+    return left.intNumberPartida < right.intNumberPartida;
+  }
+
+
+};
 struct order
 {
   bool operator() (const partidas& el,const partidas& er)
@@ -116,7 +127,7 @@ set<partidas,order> SetOfPartidas;
 set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
 vector<set<partidas,order>>::iterator iContainerOfMonths;
-set<budget,order> SetOfDescriptions;
+set<budget,orderBudget> SetOfDescriptions;
 	  budget partidaOnlyDescription;    
 
 int main()
