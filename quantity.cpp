@@ -272,10 +272,18 @@ int main()
 	case 6:
 	  //list
 	  iSetOfPartidas=SetOfPartidas.cbegin();
+	  iSetOfDescriptions=SetOfDescriptions.cbegin();
 
 	  while(iSetOfPartidas!=SetOfPartidas.cend())
-	    iSetOfPartidas++ -> printPartida(single);
+	    {
 
+	      cout << iSetOfDescriptions -> c_strNumberPartida << " ";
+	      cout << iSetOfDescriptions -> c_unity << " ";
+	      cout << iSetOfDescriptions++ -> c_description << endl;
+
+
+	      iSetOfPartidas++ -> printPartida(single);
+	    }
 	  break;
 
 	}
@@ -396,16 +404,22 @@ partidas::partidas(string partida)
 
 void partidas::printPartida(print type) const
 {
-  iSetOfDescriptions=SetOfDescriptions.cbegin();
+  // iSetOfDescriptions=SetOfDescriptions.cbegin();
 
   //one object of struct budget// one partida only descriptions.
-  partidaOnlyDescription=*iSetOfDescriptions;
-
-  cout << partidaOnlyDescription.c_strNumberPartida << " ";
-  cout << partidaOnlyDescription.c_unity << " ";
-  cout << partidaOnlyDescription.c_description << endl;
-
-
+  /*
+  while(iSetOfDescriptions!=SetOfDescriptions.cend())
+    {
+      partidaOnlyDescription=*iSetOfDescriptions++;
+      
+      cout << partidaOnlyDescription.c_strNumberPartida << " ";
+      cout << partidaOnlyDescription.c_unity << " ";
+      cout << partidaOnlyDescription.c_description << endl << endl;
+   
+ 
+    }
+  */
+     cout<<measurement<<" "<<price<<" "<<ammount<<endl;
   /*
   cout<<endl;
   cout<<strNumberPartida;
@@ -431,7 +445,7 @@ void partidas::printPartida(print type) const
     }
   else cout<<endl;
   */
-  cout<<measurement<<" "<<price<<" "<<ammount<<endl;
+
 
 }
 
