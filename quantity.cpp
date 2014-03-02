@@ -128,6 +128,7 @@ set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
 vector<set<partidas,order>>::iterator iContainerOfMonths;
 set<budget,orderBudget> SetOfDescriptions;
+set<budget,orderBudget>::iterator iSetOfDescriptions;
 	  budget partidaOnlyDescription;    
 
 int main()
@@ -395,6 +396,17 @@ partidas::partidas(string partida)
 
 void partidas::printPartida(print type) const
 {
+  iSetOfDescriptions=SetOfDescriptions.cbegin();
+
+  //one object of struct budget// one partida only descriptions.
+  partidaOnlyDescription=*iSetOfDescriptions;
+
+  cout << partidaOnlyDescription.c_strNumberPartida << " ";
+  cout << partidaOnlyDescription.c_unity << " ";
+  cout << partidaOnlyDescription.c_description << endl;
+
+
+  /*
   cout<<endl;
   cout<<strNumberPartida;
   if(type==single)
@@ -418,7 +430,7 @@ void partidas::printPartida(print type) const
       cout<<"  ";
     }
   else cout<<endl;
-
+  */
   cout<<measurement<<" "<<price<<" "<<ammount<<endl;
 
 }
