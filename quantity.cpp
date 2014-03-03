@@ -227,45 +227,59 @@ int main()
 
 	case 5:
 	  //load month to SetOfPartidas 
-	  //and the push_back to the general container (vector)
+	  //and then push_back to the general container (vector)
 	  {
-	    string fileName;
-	    cin>>fileName;
-	    
-	    ifile.open(fileName, ios_base::in | ios_base::binary);
+	    cout << "Main budget [b] or expecific month [m]? ";
+	    char answer;
+	    cin >> answer;
 
-	    //empties the whole set
-	    SetOfPartidas.erase(SetOfPartidas.begin(),SetOfPartidas.end());
-
-	    //we are going to load the data of one single partida
-	    //in the next object
-	    partidas loadingPartida(empty);
-
-	    if(ifile.is_open())
+	    if(answer=='b')
 	      {
-		//first..  load how many partidas:
-		int numberOfPartidas;
-		ifile.read((char*)&numberOfPartidas,4);
-
-		//loop with partidas
-		while(numberOfPartidas--)
-		  {
-		    //load a single partida...
-		    loadingPartida.loadPartida();
-
-		    //insert this loadingPartida in the SetOfPartidas
-		    SetOfPartidas.insert(loadingPartida);
-		  }
-
-		auto i=SetOfPartidas.begin();
 
 
-
-		//push_back on the vector.. general container
-		ContainerOfMonths.push_back(SetOfPartidas);
 	      }
 
-	    ifile.close();
+	      else if(answer=='m')
+	     {
+		cout << "File name: ";
+		string fileName;
+		cin>>fileName;
+		
+		ifile.open(fileName, ios_base::in | ios_base::binary);
+
+		//empties the whole set
+		SetOfPartidas.erase(SetOfPartidas.begin(),SetOfPartidas.end());
+		
+		//we are going to load the data of one single partida
+		//in the next object
+		partidas loadingPartida(empty);
+		
+		if(ifile.is_open())
+		  {
+		    //first..  load how many partidas:
+		    int numberOfPartidas;
+		    ifile.read((char*)&numberOfPartidas,4);
+		    
+		    //loop with partidas
+		    while(numberOfPartidas--)
+		      {
+			//load a single partida...
+			loadingPartida.loadPartida();
+			
+			//insert this loadingPartida in the SetOfPartidas
+			SetOfPartidas.insert(loadingPartida);
+		      }
+
+		    auto i=SetOfPartidas.begin();
+
+
+
+		    //push_back on the vector.. general container
+		    ContainerOfMonths.push_back(SetOfPartidas);
+		  }
+		
+		ifile.close();
+		 }
 	  }
 	  break;
 
