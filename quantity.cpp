@@ -86,6 +86,7 @@ public:
  
   void savePartida()const;  
   void loadPartida();
+ static  void loadPartida(char);
 
 };
 
@@ -234,10 +235,14 @@ int main()
 	    cin >> answer;
 
 	    if(answer=='b')
-	      {
+	      
+		//overload loadpartida for loading the  budget
+		//load partida in partidaOnlyDescrition  from here (is global)
+		//insert that partida in SetOfDescriptions after erasing everything
+	      //the next method with any character is to load the budget.
+		partidas::loadPartida('b');
 
-
-	      }
+	      
 
 	      else if(answer=='m')
 	     {
@@ -245,7 +250,7 @@ int main()
 		string fileName;
 		cin>>fileName;
 		
-		ifile.open(fileName, ios_base::in | ios_base::binary);
+		ifile.open(fileName, ios_base::binary);
 
 		//empties the whole set
 		SetOfPartidas.erase(SetOfPartidas.begin(),SetOfPartidas.end());
@@ -532,4 +537,36 @@ void partidas::loadPartida()
   ifile.read((char*)&ammount,4);
   ifile.read((char*)&intNumberPartida,4);
   
+}
+
+void partidas::loadPartida(char budget)
+{
+  //we have to call this method like this:   loadPartida('b')
+  //b o any other letter
+
+  //we are going to fill partidaOnly description
+  //then insert in SetOfDescriptions
+
+  ifile.open("budget",ios_base::binary);
+
+    if(ifile.is_open())
+      {
+	while(ifile.good())
+	  {
+	    int amount;
+
+	    ifile.read((char*)&amount,4);
+	    ifile.read((char*)partidaOnlyDescription.c_strNumberPartida,amount);
+	    
+	    ifile.read((char*)&amount,4);
+	    ifile.read((char*)partidaOnlyDescription.c_unity,amount);
+	    
+	    ifile.read((char*)&amount,4);
+	    ifile.read((char*)partidaOnlyDescription.c_description,amount);
+	    
+	    SetOfDescriptions.insert(partidaOnlyDescription);
+	    
+	  }
+      }
+  ifile.close();
 }
