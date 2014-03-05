@@ -57,7 +57,7 @@ inline  void save(float reader)const{  file.write(reinterpret_cast<const char*>(
 
 public:
 
- void strToIntPartida();
+  void strToIntPartida();
 
   int intNumberPartida;
   void load(string&);
@@ -86,7 +86,7 @@ public:
  
   void savePartida()const;  
   void loadPartida();
- static  void loadPartida(char);
+  static  void loadPartida(char);//load the budget
 
 };
 
@@ -97,6 +97,8 @@ struct budget
   char c_description[200];
   int intNumberPartida;
 };
+
+typedef budget theBudget;//both are the same
 
 struct orderBudget
 {
@@ -243,10 +245,6 @@ int main()
 		partidas::loadPartida('b');
 
 	      
-
-	      else if(answer=='m')
-	     {
-		cout << "File name: ";
 		string fileName;
 		cin>>fileName;
 		
@@ -285,7 +283,7 @@ int main()
 		
 		ifile.close();
 		 }
-	  }
+	  
 	  break;
 
 	case 6:
@@ -298,8 +296,9 @@ int main()
 
 	      cout << iSetOfDescriptions -> c_strNumberPartida << " ";
 	      cout << iSetOfDescriptions -> c_unity << " ";
-	      cout << iSetOfDescriptions++ -> c_description << endl;
+	      cout << iSetOfDescriptions -> c_description << endl;
 
+	      ++iSetOfDescriptions;
 
 	      iSetOfPartidas++ -> printPartida(single);
 	    }
@@ -547,10 +546,15 @@ void partidas::loadPartida(char budget)
   //we are going to fill partidaOnly description
   //then insert in SetOfDescriptions
 
+  vector<theBudget> auxBudget;  
+
   ifile.open("budget",ios_base::binary);
 
     if(ifile.is_open())
       {
+	int intOfPartida=0;
+	
+
 	while(ifile.good())
 	  {
 	    int amount;
@@ -563,10 +567,21 @@ void partidas::loadPartida(char budget)
 	    
 	    ifile.read((char*)&amount,4);
 	    ifile.read((char*)partidaOnlyDescription.c_description,amount);
+
+	    partidaOnlyDescription.intNumberPartida=intOfPartida++;
 	    
-	    SetOfDescriptions.insert(partidaOnlyDescription);
+	      SetOfDescriptions.insert(partidaOnlyDescription);
 	    
 	  }
+
+
       }
+    
+    
   ifile.close();
+
+
+
+
+
 }
