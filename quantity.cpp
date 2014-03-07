@@ -231,7 +231,7 @@ int main()
 	case 5:
 	  //load month to SetOfPartidas 
 	  //and then push_back to the general container (vector)
-	  {
+	  
 	    cout << "Main budget [b] or expecific month [m]? ";
 	    char answer;
 	    cin >> answer;
@@ -244,48 +244,55 @@ int main()
 	      //the next method with any character is to load the budget.
 		partidas::loadPartida('b');
 
-	      
+	    else{ 
 		string fileName;
 		cin>>fileName;
 		
-		ifile.open(fileName, ios_base::binary);
+		ifile.open(fileName,ios_base::in | ios_base::binary);
 
-		//empties the whole set
-		SetOfPartidas.erase(SetOfPartidas.begin(),SetOfPartidas.end());
-		
-		//we are going to load the data of one single partida
-		//in the next object
-		partidas loadingPartida(empty);
-		
+	
 		if(ifile.is_open())
 		  {
+
+		    //empties the whole set
+		    SetOfPartidas.erase(SetOfPartidas.begin(),SetOfPartidas.end());
+		    
+		    //we are going to load the data of one single partida
+		    //in the next object
+		    partidas loadingPartida(empty);
+	      	
+		    
 		    //first..  load how many partidas:
 		    int numberOfPartidas;
 		    ifile.read((char*)&numberOfPartidas,4);
 		    
 		    //loop with partidas
 		    while(numberOfPartidas--)
+		       //while(ifile.good())
 		      {
 			//load a single partida...
-			loadingPartida.loadPartida();
+				loadingPartida.loadPartida();
 			
 			//insert this loadingPartida in the SetOfPartidas
-			SetOfPartidas.insert(loadingPartida);
+				SetOfPartidas.insert(loadingPartida);
 		      }
-
-		    auto i=SetOfPartidas.begin();
-
-
-
+		    	
+		     // auto i=SetOfPartidas.begin();
+		    
 		    //push_back on the vector.. general container
 		    ContainerOfMonths.push_back(SetOfPartidas);
-		  }
+
+		   
+			ifile.close();
+		      
+			int g=44;
+		  }//end of file is open
+	    }//end else
 		
-		ifile.close();
-		 }
+	  
 	  
 	  break;
-
+	  
 	case 6:
 	  //list
 	  iSetOfPartidas=SetOfPartidas.cbegin();
@@ -519,7 +526,7 @@ void partidas::load(string& field)
   ifile.read((char*)c_reader,numberOfCharacters);
   string aux(c_reader);
   delete c_reader;
-  copy(aux.cbegin(),aux.cend(),field.begin());//only for a string
+  //copy(aux.cbegin(),aux.cend(),field.begin());//only for a string
 
 }
 
@@ -529,7 +536,9 @@ void partidas::loadPartida()
 
   load(strNumberPartida);//passes the value by reference
   load(unity);
-  load(description);
+  
+
+    load(description);
   
   ifile.read((char*)&measurement,4);
   ifile.read((char*)&price,4);
@@ -548,7 +557,7 @@ void partidas::loadPartida(char budget)
 
   vector<theBudget> auxBudget;  
 
-  ifile.open("budget",ios_base::binary);
+  ifile.open("budget",ios_base::in | ios_base::binary);
 
     if(ifile.is_open())
       {
@@ -574,14 +583,7 @@ void partidas::loadPartida(char budget)
 	    
 	  }
 
-
+	ifile.close();
       }
     
-    
-  ifile.close();
-
-
-
-
-
-}
+    }
