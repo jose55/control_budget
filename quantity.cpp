@@ -167,7 +167,7 @@ int main()
 	    //... and push the new one
 	    ContainerOfMonths.push_back(SetOfPartidas);
 	    
-	    //currentPartida desapear because is local to this block
+	    //currentPartida desappear because is local to this block
 	  }
 	  break;
 	case 2:
@@ -414,9 +414,16 @@ partidas::partidas(char)
       save(strNumberPartida.c_str());
       save(unity.c_str());
       save(description.c_str());
+
+      file.close();
+
+     
+      strcpy( partidaOnlyDescription.c_strNumberPartida,strNumberPartida.c_str());
+      SetOfDescriptions.insert(partidaOnlyDescription);
     }
 
-  file.close();
+
+ 
 }
 
 
