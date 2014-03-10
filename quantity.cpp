@@ -399,12 +399,16 @@ partidas::partidas(char)
   //  strcpy(c_description,description.c_str());
   strcpy(partidaOnlyDescription.c_description,description.c_str());
 
+  strToIntPartida();
+  //  strcpy( partidaOnlyDescription.c_strNumberPartida,strNumberPartida.c_str());
+  partidaOnlyDescription.intNumberPartida=intNumberPartida;
+
   cout<<"\nMeasurement: ";
   cin>>measurement;
   cout<<"Price: ";
   cin>>price;
   ammount=measurement*price;
-  cout<<"\nAmmount: "<<ammount<<endl;
+  cout<<"\nAmmount: " << ammount << endl;
 
   //now, we want to save the 3 strings (but c_style) in file: budget 
 
@@ -414,18 +418,16 @@ partidas::partidas(char)
       save(strNumberPartida.c_str());
       save(unity.c_str());
       save(description.c_str());
+     
+
+      save(intNumberPartida);
 
       file.close();
 
-     
-      strcpy( partidaOnlyDescription.c_strNumberPartida,strNumberPartida.c_str());
-      SetOfDescriptions.insert(partidaOnlyDescription);
+          
     }
-
-
  
 }
-
 
 
 partidas::partidas(string partida)
@@ -584,9 +586,11 @@ void partidas::loadPartida(char budget)
 	    ifile.read((char*)&amount,4);
 	    ifile.read((char*)partidaOnlyDescription.c_description,amount);
 
-	    partidaOnlyDescription.intNumberPartida=intOfPartida++;
+	    ifile.read((char*)&partidaOnlyDescription.intNumberPartida,4);
+
+	    //	    partidaOnlyDescription.intNumberPartida=intOfPartida++;
 	    
-	      SetOfDescriptions.insert(partidaOnlyDescription);
+	        SetOfDescriptions.insert(partidaOnlyDescription);
 	    
 	  }
 
