@@ -176,7 +176,7 @@ int main()
 
 	case 3:
 	  {
-	    //print single partida completely
+	    //print single partida completely and edit it
 	    cout<<"Which partida do you want to print? ";
 	    string partida;
 	    cin>>partida;
@@ -188,13 +188,22 @@ int main()
 	    partidaToCompare.strToIntPartida();
 
 	    iSetOfPartidas=SetOfPartidas.find(partidaToCompare);
+
+	    partidaOnlyDescription.intNumberPartida=partidaToCompare.intNumberPartida;
+
+	    iSetOfDescriptions=SetOfDescriptions.find(partidaOnlyDescription);
 	 
 	    if(iSetOfPartidas!=SetOfPartidas.end())
-	      iSetOfPartidas->printPartida();// for it is CONST !!!!
+	      {
+		cout << iSetOfDescriptions -> c_strNumberPartida << " ";
+		cout << iSetOfDescriptions -> c_unity << " ";
+		cout << iSetOfDescriptions -> c_description << endl;
+
+		iSetOfPartidas->printPartida();// for it is CONST !!!!
 		//		partidaToCompare=*iSetOfPartidas;
 		//		partidaToCompare.printPartida();
 		//****** VERY IMPORTANT *******
-	      
+	      }
 	      
 	    else
 	      cout << "There's not such a partida"<<endl;
