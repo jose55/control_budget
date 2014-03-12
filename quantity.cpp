@@ -87,6 +87,7 @@ public:
   void savePartida()const;  
   void loadPartida();
   static  void loadPartida(char);//load the budget
+  const void edit(char);
 
 };
 
@@ -125,7 +126,7 @@ void menu();
 //char partidas::c_strNumberPartida[5];
 //char partidas::c_unity[5];
 //char partidas::c_description[200];
-
+partidas auxPartida;
 set<partidas,order> SetOfPartidas;
 set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
@@ -207,6 +208,18 @@ int main()
 	      
 	    else
 	      cout << "There's not such a partida"<<endl;
+	    
+	    cout << "Edit anything...? " << endl;
+	    
+	    cout << "<u> unity <d> description <m> measurement <p> price <a> amount ";
+
+	    char result;
+	    
+	    cin >> result;
+
+	    partidaToCompare.edit (result);
+
+
 
 	  }
 
@@ -607,3 +620,81 @@ void partidas::loadPartida(char budget)
       }
     
     }
+
+const void partidas::edit(char c)
+{
+  //we pass what we are going to edit and change out of the container to an object
+  partidaOnlyDescription=*iSetOfDescriptions;
+  auxPartida=*iSetOfPartidas;
+
+  //once they are in the object out of the container we can delete them in the container.
+  //later we'll insert the object changed
+  SetOfDescriptions.erase(*iSetOfDescriptions);
+  SetOfPartidas.erase(*iSetOfPartidas);
+
+  switch(c)
+    {
+      
+    case 'u':
+      
+      
+
+	char n[5];
+	cin >> n;
+	
+	strcpy(partidaOnlyDescription.c_unity,n);
+
+	SetOfDescriptions.insert(partidaOnlyDescription);
+
+	//now we have to save in hd
+	
+      
+      break;
+      
+    case 'd':
+      {
+      
+      string aux;
+      getline(cin,aux);
+      strcpy(partidaOnlyDescription.c_description,aux.c_str());
+      SetOfDescriptions.insert(partidaOnlyDescription);
+
+      }
+      break;
+    case 'm':
+      //measurement
+      float m;
+      cin >> m;
+      auxPartida.measurement=m;
+
+      SetOfPartidas.insert(auxPartida);
+
+      break;
+    case 'p':
+      //price
+      float p;
+      cin >> p;
+      auxPartida.price=p;
+
+      auxPartida.ammount=auxPartida.measurement * auxPartida.price;
+
+      SetOfPartidas.insert(auxPartida);
+    break;
+    case 'a':
+      //amount
+      float a;
+      cin >> a;
+
+      auxPartida.ammount=a;
+
+      auxPartida.price = auxPartida.ammount / auxPartida.measurement;
+
+
+      break;
+
+    }
+
+
+
+  
+}
