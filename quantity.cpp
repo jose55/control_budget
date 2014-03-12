@@ -5,6 +5,8 @@
 #include <sstream>
 #include <fstream>
 #include <string.h>
+#include <algorithm>
+
 using namespace std;
 
 enum print{detailed,single};
@@ -12,9 +14,6 @@ ofstream file;
 ifstream ifile;
 
 const int empty=0;
-
-
-
 
 class partidas
 {
@@ -54,6 +53,8 @@ class partidas
 inline  void save(float reader)const{  file.write(reinterpret_cast<const char*>(&reader),sizeof(reader));}
 
   inline  void save(int reader)const{  file.write(reinterpret_cast<const char*>(&reader),sizeof(reader));}
+
+  void saveBudget();
 
 public:
 
@@ -109,7 +110,12 @@ struct orderBudget
 
     return left.intNumberPartida < right.intNumberPartida;
   }
-
+  
+  bool operator== ( const budget& a    )
+  {
+    return true;
+  }
+  
 
 };
 struct order
@@ -118,9 +124,11 @@ struct order
   {
     return el.intNumberPartida < er.intNumberPartida;
   }
+
+  
 };
 
-void menu();
+void menu();//we are declaring a global function here
 
 
 //char partidas::c_strNumberPartida[5];
@@ -131,9 +139,10 @@ set<partidas,order> SetOfPartidas;
 set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
 vector<set<partidas,order>>::iterator iContainerOfMonths;
+
 set<budget,orderBudget> SetOfDescriptions;
 set<budget,orderBudget>::iterator iSetOfDescriptions;
-	  budget partidaOnlyDescription;    
+budget partidaOnlyDescription;    
 
 int main()
 {
@@ -171,6 +180,7 @@ int main()
 	    //currentPartida desappear because is local to this block
 	  }
 	  break;
+
 	case 2:
 
 	  break;
@@ -304,10 +314,8 @@ int main()
 		    //push_back on the vector.. general container
 		    ContainerOfMonths.push_back(SetOfPartidas);
 
-		   
-			ifile.close();
-		      
-			int g=44;
+		    ifile.close();
+		   		
 		  }//end of file is open
 	    }//end else
 		
@@ -322,10 +330,36 @@ int main()
 
 	  while(iSetOfPartidas!=SetOfPartidas.cend())
 	    {
+	      //how many partidas are there?? the same type
+	      //we have to print the last one
+	      //we have to code the binary predicate
+	      //oveloaded operator == ,  if we want this funtion to work 
+	      //   partidaOnlyDescription=*iSetOfDescriptions;	      
+
+	      size_t times=0;
+	      //  auto aux_iSetOfDescriptions=iSetOfDescriptions;
+	      	      
+	      /*      
+	      do
+		{
+		
+		 times=count_if(   iSetOfDescriptions++   ,SetOfDescriptions.cend(),[](const budget& part){ return part.intNumberPartida==partidaOnlyDescription.intNumberPartida;});
+
+			  
+		}
+
+	      while(times > 1);
+
+	      --iSetOfDescriptions;
+	      */
+
 
 	      cout << iSetOfDescriptions -> c_strNumberPartida << " ";
 	      cout << iSetOfDescriptions -> c_unity << " ";
 	      cout << iSetOfDescriptions -> c_description << endl;
+
+
+
 
 	      ++iSetOfDescriptions;
 
@@ -434,6 +468,13 @@ partidas::partidas(char)
 
   //now, we want to save the 3 strings (but c_style) in file: budget 
 
+  SetOfDescriptions.insert(partidaOnlyDescription);
+
+  saveBudget();
+  
+ 
+
+  /*
   file.open("budget",ios_base::out | ios_base::binary | ios_base::app);
   if(file.is_open())
     {
@@ -448,6 +489,7 @@ partidas::partidas(char)
 
           
     }
+  */
  
 }
 
@@ -611,7 +653,8 @@ void partidas::loadPartida(char budget)
 	    ifile.read((char*)&partidaOnlyDescription.intNumberPartida,4);
 
 	    //	    partidaOnlyDescription.intNumberPartida=intOfPartida++;
-	    
+	 
+	    //now it is multiset so ... we are loading several of the same partida if there were   
 	        SetOfDescriptions.insert(partidaOnlyDescription);
 	    
 	  }
@@ -636,10 +679,7 @@ const void partidas::edit(char c)
     {
       
     case 'u':
-      
-      
-
-	char n[5];
+      	char n[5];
 	cin >> n;
 	
 	strcpy(partidaOnlyDescription.c_unity,n);
@@ -647,47 +687,57 @@ const void partidas::edit(char c)
 	SetOfDescriptions.insert(partidaOnlyDescription);
 
 	//now we have to save in hd
+	saveBudget();//maybe this partida is repited
 	
       
       break;
       
     case 'd':
       {
-      
-      string aux;
-      getline(cin,aux);
-      strcpy(partidaOnlyDescription.c_description,aux.c_str());
-      SetOfDescriptions.insert(partidaOnlyDescription);
+	cin.clear();
+	cin.ignore();
+	string aux;
+	getline(cin,aux);
+	strcpy(partidaOnlyDescription.c_description,aux.c_str());
+	SetOfDescriptions.insert(partidaOnlyDescription);
+	
+	saveBudget();//now maybe the partida is repited
 
       }
       break;
+
     case 'm':
       //measurement
       float m;
       cin >> m;
       auxPartida.measurement=m;
 
+      auxPartida.ammount=m * auxPartida.price;
+
       SetOfPartidas.insert(auxPartida);
 
       break;
+
     case 'p':
       //price
       float p;
       cin >> p;
       auxPartida.price=p;
 
-      auxPartida.ammount=auxPartida.measurement * auxPartida.price;
+      auxPartida.ammount=auxPartida.measurement * p;
 
       SetOfPartidas.insert(auxPartida);
     break;
+
     case 'a':
       //amount
+
       float a;
       cin >> a;
 
       auxPartida.ammount=a;
 
-      auxPartida.price = auxPartida.ammount / auxPartida.measurement;
+      auxPartida.price = a / auxPartida.measurement;
 
 
       break;
@@ -697,4 +747,25 @@ const void partidas::edit(char c)
 
 
   
+}
+
+
+void partidas::saveBudget()
+{
+
+  file.open("budget",ios_base::out | ios_base::binary | ios_base::app);
+  if(file.is_open())
+    {
+      save(strNumberPartida.c_str());
+      save(unity.c_str());
+      save(description.c_str());
+      
+      
+      save(intNumberPartida);
+      
+      file.close();
+      
+      
+    }
+
 }
