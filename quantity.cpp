@@ -140,8 +140,8 @@ set<partidas,order>::iterator iSetOfPartidas;
 vector<set<partidas,order>> ContainerOfMonths;
 vector<set<partidas,order>>::iterator iContainerOfMonths;
 
-set<budget,orderBudget> SetOfDescriptions;
-set<budget,orderBudget>::iterator iSetOfDescriptions;
+multiset<budget,orderBudget> SetOfDescriptions;
+multiset<budget,orderBudget>::iterator iSetOfDescriptions;
 budget partidaOnlyDescription;    
 
 int main()
@@ -334,24 +334,27 @@ int main()
 	      //we have to print the last one
 	      //we have to code the binary predicate
 	      //oveloaded operator == ,  if we want this funtion to work 
-	      //   partidaOnlyDescription=*iSetOfDescriptions;	      
+
+	      partidaOnlyDescription=*iSetOfDescriptions;	      
 
 	      size_t times=0;
 	      //  auto aux_iSetOfDescriptions=iSetOfDescriptions;
 	      	      
-	      /*      
+	            
 	      do
 		{
+		  int g=9;
 		
 		 times=count_if(   iSetOfDescriptions++   ,SetOfDescriptions.cend(),[](const budget& part){ return part.intNumberPartida==partidaOnlyDescription.intNumberPartida;});
 
+		 int c=55;
 			  
 		}
 
 	      while(times > 1);
 
 	      --iSetOfDescriptions;
-	      */
+	      
 
 
 	      cout << iSetOfDescriptions -> c_strNumberPartida << " ";
@@ -672,8 +675,10 @@ const void partidas::edit(char c)
 
   //once they are in the object out of the container we can delete them in the container.
   //later we'll insert the object changed
+  /*
   SetOfDescriptions.erase(*iSetOfDescriptions);
   SetOfPartidas.erase(*iSetOfPartidas);
+  */
 
   switch(c)
     {
@@ -684,6 +689,8 @@ const void partidas::edit(char c)
 	
 	strcpy(partidaOnlyDescription.c_unity,n);
 
+
+	SetOfDescriptions.erase(*iSetOfDescriptions);
 	SetOfDescriptions.insert(partidaOnlyDescription);
 
 	//now we have to save in hd
@@ -699,9 +706,30 @@ const void partidas::edit(char c)
 	string aux;
 	getline(cin,aux);
 	strcpy(partidaOnlyDescription.c_description,aux.c_str());
+
+	SetOfDescriptions.erase(*iSetOfDescriptions);
 	SetOfDescriptions.insert(partidaOnlyDescription);
 	
-	saveBudget();//now maybe the partida is repited
+
+	
+
+ file.open("budget",ios_base::out | ios_base::binary | ios_base::app);
+  if(file.is_open())
+    {
+      save(strNumberPartida.c_str());
+      save(partidaOnlyDescription.c_unity);
+      save(partidaOnlyDescription.c_description);
+      
+      
+      save(intNumberPartida);
+      
+      file.close();
+      
+      
+    }
+	
+
+	//	saveBudget();//now maybe the partida is repited
 
       }
       break;
@@ -714,6 +742,7 @@ const void partidas::edit(char c)
 
       auxPartida.ammount=m * auxPartida.price;
 
+      SetOfPartidas.erase(*iSetOfPartidas);
       SetOfPartidas.insert(auxPartida);
 
       break;
@@ -726,6 +755,8 @@ const void partidas::edit(char c)
 
       auxPartida.ammount=auxPartida.measurement * p;
 
+      SetOfPartidas.erase(*iSetOfPartidas);
+
       SetOfPartidas.insert(auxPartida);
     break;
 
@@ -737,8 +768,11 @@ const void partidas::edit(char c)
 
       auxPartida.ammount=a;
 
+
       auxPartida.price = a / auxPartida.measurement;
 
+      SetOfPartidas.erase(*iSetOfPartidas);
+      SetOfPartidas.insert(auxPartida);
 
       break;
 
